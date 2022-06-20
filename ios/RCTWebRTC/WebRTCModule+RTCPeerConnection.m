@@ -258,6 +258,25 @@ RCT_EXPORT_METHOD(peerConnectionSetRemoteDescription:(RTCSessionDescription *)sd
       };
       callback(@[@(NO), errorResponse]);
     } else {
+        for (RTCRtpSender *sender in peerConnection.senders) {
+          RCTLogInfo(@"[WebRTC Peer Connection set remote description] Peer connection has senders");
+          RCTLogInfo(@"[WebRTC Peer Connection set remote description] sender is %@", sender.description);
+     
+          RTCRtpParameters *parametersToModify = sender.parameters;
+          [parametersToModify setDegradationPreference: [NSNumber numberWithInteger:RTCDegradationPreferenceMaintainResolution]];
+          [sender setParameters:parametersToModify];
+          RCTLogInfo(@"[WebRTC Peer Connection set remote description] Set degredation preference to RTCDegradationPreferenceMaintainResolution");
+//         Experiments with max/min bitrate here, the min bitrate seems to prevent streams from starting, max bitrate seems to work
+//           for (RTCRtpEncodingParameters *encoding in parametersToModify.encodings) {
+//             [encoding setMaxBitrateBps:@10000000];
+// //                       [encoding setMinBitrateBps:@1000000];
+//             [sender setParameters:parametersToModify];
+//             RCTLogInfo(@"[WebRTC Peer Connection set remote description] Set Max Bitrate succesfully");
+//             RCTLogInfo(@"[WebRTC Peer Connection set remote description] encoder is %@", encoding.description);
+//             RCTLogInfo(@"[WebRTC Peer Connection set remote description] current max bitrate is %@", encoding.maxBitrateBps);
+//             RCTLogInfo(@"[WebRTC Peer Connection set remote description] current scale is %@", encoding.scaleResolutionDownBy);
+//           }
+      }
       id newSdp = @{
           @"type": [RTCSessionDescription stringForType:peerConnection.remoteDescription.type],
           @"sdp": peerConnection.remoteDescription.sdp
