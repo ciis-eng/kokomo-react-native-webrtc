@@ -19,6 +19,7 @@
   "types": "lib/typescript/index.d.ts",
   "main": "lib/commonjs/index.js",
   "module": "lib/module/index.js",
+  "postinstall": "node tools/downloadWebRTC.js",
   "dependencies": {
     "base64-js": "1.5.1",
     "debug": "4.3.4",
@@ -60,5 +61,9 @@
       "module",
       "typescript"
     ]
+  },
+  "webrtc-builds": {
+    "android": "https://github.com/jitsi/webrtc/releases/download/v106.0.0/android-webrtc.zip",
+    "ios": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/TestWebRTCTS/WebRTC.xcframework.tgz"
   }
 }
