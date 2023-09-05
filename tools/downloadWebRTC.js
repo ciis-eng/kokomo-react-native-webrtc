@@ -86,6 +86,7 @@ async function download(url, filePath) {
             console.log('Removing previously downloaded file')
             fs.rmSync(dstPath);
         }
+        fs.mkdirSync(dstDir, { recursive: true });
 
         console.log(`Downloading ${url}...`);
 
