@@ -22,7 +22,9 @@
   "dependencies": {
     "base64-js": "1.5.1",
     "debug": "4.3.4",
-    "event-target-shim": "6.0.2"
+    "event-target-shim": "6.0.2",
+    "adm-zip": "0.5.9",
+    "tar": "6.1.11"
   },
   "peerDependencies": {
     "react-native": ">=0.60.0"

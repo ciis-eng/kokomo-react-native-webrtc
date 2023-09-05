@@ -18,14 +18,14 @@ async function download(url, filePath) {
                 resolve(download(response.headers.location, filePath));
                 return;
             }
-            
+
             if (response.statusCode !== 200) {
                 reject(new Error(`Failed to get '${url}' (${response.statusCode})`));
                 return;
             }
-            
+
             const file = fs.createWriteStream(filePath);
-            
+
             file.on('finish', () => resolve());
 
             file.on('error', err => {
@@ -34,11 +34,11 @@ async function download(url, filePath) {
 
             response.pipe(file);
         });
-        
+
         request.on('error', err => {
             fs.unlink(filePath, () => reject(err));
         });
-        
+
         request.end();
     });
 }
@@ -106,4 +106,5 @@ async function download(url, filePath) {
 
         console.log('Done!');
     }
+    process.exit(0);
 })();
