@@ -14,6 +14,9 @@
 #import <WebRTC/RTCRtpTransceiver.h>
 #import <WebRTC/RTCSessionDescription.h>
 #import <WebRTC/RTCStatisticsReport.h>
+#import <WebRTC/RTCRtpSender.h>
+
+
 
 #import "SerializeUtils.h"
 #import "WebRTCModule+RTCDataChannel.h"
@@ -232,6 +235,15 @@ RCT_EXPORT_METHOD(peerConnectionSetRemoteDescription
     NSMutableArray *receiversIds = [NSMutableArray new];
     for (RTCRtpTransceiver *transceiver in peerConnection.transceivers) {
         [receiversIds addObject:transceiver.receiver.receiverId];
+    }
+    
+    for (RTCRtpSender *sender in peerConnection.senders) {
+        RCTLogInfo(@"[WebRTC Peer Connection set remote description] Peer connection has senders");
+        RCTLogInfo(@"[WebRTC Peer Connection set remote description] sender is %@", sender.description);
+        
+        RTCRtpParameters *parametersToModify = sender.parameters;
+        [parametersToModify setDegradationPreference: [NSNumber numberWithInteger:RTCDegradationPreferenceMaintainResolution]];
+        [sender setParameters:parametersToModify];
     }
 
     RTCSetSessionDescriptionCompletionHandler handler = ^(NSError *error) {
