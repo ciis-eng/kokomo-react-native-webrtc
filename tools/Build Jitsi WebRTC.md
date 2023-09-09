@@ -2,6 +2,7 @@
 
 ## Notes:
 - for build-jitsi-webrtc.sh, use "--ios" or "--android" params
+- IOS needs to be built on Mac & Android needs to be built on Linux
 - tools/patches contain git patches
 	- patches/src contains patches to webrtc src folder
 - 2 new commands were added to build-webrtc.py
