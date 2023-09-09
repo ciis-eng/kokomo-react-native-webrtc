@@ -1,0 +1,57 @@
+diff --git a/call/rtp_video_sender.cc b/call/rtp_video_sender.cc
+index de19b97c66..914b09808e 100644
+--- a/call/rtp_video_sender.cc
++++ b/call/rtp_video_sender.cc
+@@ -581,9 +581,10 @@ EncodedImageCallback::Result RtpVideoSender::OnEncodedImage(
+   }
+   RTC_DCHECK_LT(stream_index, rtp_streams_.size());
+ 
+-  uint32_t rtp_timestamp =
+-      encoded_image.Timestamp() +
+-      rtp_streams_[stream_index].rtp_rtcp->StartTimestamp();
++  int64_t epoch_time = Clock::GetRealTimeClock()->CurrentNtpInMilliseconds() - 2'208'988'800 * 1000;
++  // get the last 9 digits of the current epoch timestamp
++  uint32_t rtp_timestamp = static_cast<uint32_t>(epoch_time % 1000000000);
++
+ 
+   // RTCPSender has it's own copy of the timestamp offset, added in
+   // RTCPSender::BuildSR, hence we must not add the in the offset for this call.
+diff --git a/sdk/objc/components/capturer/RTCCameraVideoCapturer.m b/sdk/objc/components/capturer/RTCCameraVideoCapturer.m
+index 98d3cf9f45..91d5bf3090 100644
+--- a/sdk/objc/components/capturer/RTCCameraVideoCapturer.m
++++ b/sdk/objc/components/capturer/RTCCameraVideoCapturer.m
+@@ -251,20 +251,7 @@ - (void)captureOutput:(AVCaptureOutput *)captureOutput
+   }
+ 
+ #if TARGET_OS_IPHONE
+-  // Default to portrait orientation on iPhone.
+-  BOOL usingFrontCamera = NO;
+-  // Check the image's EXIF for the camera the image came from as the image could have been
+-  // delayed as we set alwaysDiscardsLateVideoFrames to NO.
+-  AVCaptureDevicePosition cameraPosition =
+-      [AVCaptureSession devicePositionForSampleBuffer:sampleBuffer];
+-  if (cameraPosition != AVCaptureDevicePositionUnspecified) {
+-    usingFrontCamera = AVCaptureDevicePositionFront == cameraPosition;
+-  } else {
+-    AVCaptureDeviceInput *deviceInput =
+-        (AVCaptureDeviceInput *)((AVCaptureInputPort *)connection.inputPorts.firstObject).input;
+-    usingFrontCamera = AVCaptureDevicePositionFront == deviceInput.device.position;
+-  }
+-  switch (_orientation) {
++    switch (_orientation) {
+     case UIDeviceOrientationPortrait:
+       _rotation = RTCVideoRotation_90;
+       break;
+@@ -272,10 +259,10 @@ - (void)captureOutput:(AVCaptureOutput *)captureOutput
+       _rotation = RTCVideoRotation_270;
+       break;
+     case UIDeviceOrientationLandscapeLeft:
+-      _rotation = usingFrontCamera ? RTCVideoRotation_180 : RTCVideoRotation_0;
++      _rotation = RTCVideoRotation_90;
+       break;
+     case UIDeviceOrientationLandscapeRight:
+-      _rotation = usingFrontCamera ? RTCVideoRotation_0 : RTCVideoRotation_180;
++      _rotation = RTCVideoRotation_90;
+       break;
+     case UIDeviceOrientationFaceUp:
+     case UIDeviceOrientationFaceDown:
