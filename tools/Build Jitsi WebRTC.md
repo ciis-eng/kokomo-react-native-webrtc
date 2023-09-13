@@ -1,7 +1,7 @@
 # Building Jitsi version of WebRTC.xcframework
 
 ## Notes:
-- for build-jitsi-webrtc.sh, use "--ios" or "--android" params
+- for build-jitsi-webrtc.sh, use "ios" or "android" params
 - IOS needs to be built on Mac & Android needs to be built on Linux
 - tools/patches contain git patches
 	- patches/src contains patches to webrtc src folder
