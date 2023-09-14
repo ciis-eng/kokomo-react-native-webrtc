@@ -123,10 +123,10 @@ def setup_src(target_dir, platform):
     mkdirp('/tmp/src')
     sh('cp patches/src/* /tmp/src/')
 
-    # get jitsi tag branch from package.json "version"
+    # get jitsi tag branch from package.json "repoTag"
     f = open("../package.json", "r")
-    gitTag = json.loads(f.read())["version"]
-    print('git tag to use: %s' % gitTag)
+    repoTag = json.loads(f.read())["repoTag"]
+    print('git tag to use: %s' % repoTag)
 
     mkdirp(target_dir)
     os.chdir(target_dir)
@@ -151,7 +151,7 @@ def setup_src(target_dir, platform):
 
     # apply src patch(es for branch tag specified in package.json)
     os.chdir(webrtc_dir + "/src")
-    sh('git checkout %s' % gitTag)
+    sh('git checkout %s' % repoTag)
         
     srcPatchDir = "/tmp/src"
     for filename in os.scandir(srcPatchDir):
