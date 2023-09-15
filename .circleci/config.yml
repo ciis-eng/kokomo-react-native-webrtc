@@ -27,9 +27,6 @@ jobs:
           name: install node 16.18.0
           command: nvm install 16.18.0
       - run:
-          name: run npm
-          command: npm i
-      - run:
           name: "Build Android version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
       - run:
