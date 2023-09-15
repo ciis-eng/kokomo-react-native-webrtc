@@ -38,14 +38,14 @@ if [ $? -ne 0 ]; then
   exit 1
 fi
 
-# Comment out for CircleCI Testing -- python3 tools/build-webrtc.py --sync --$1 ~/srcjitsi
+python3 tools/build-webrtc.py --sync --$1 ~/srcjitsi
 
 if [ $? -ne 0 ]; then
   echo "Error while trying to sync (i.e. gclient sync -D)"
   exit 1
 fi
 
-# Comment out for CircleCI Testing -- python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
+python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
 
 # Copy/Upload generated .zip file to appropriate place in repo (TBD)
 
