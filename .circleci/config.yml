@@ -31,11 +31,31 @@ jobs:
           command: "./tools/build-jitsi-webrtc.sh android TestReleaseBuild"
       - run:
           name: run npm
-          command: ls ~/srcjitsi/build_webrtc/build; ls ~/srcjitsi/build_webrtc/webrtc/android/src/build
-
+          command: ls ~/srcjitsi/build_webrtc/build/android
+  dis-ios-build:
+    description: IOS build for DIS
+    macos:
+      xcode: 14.2.0 # Specify the Xcode version to use
+    resource_class: macos.m1.medium.gen1
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+    # Add steps to the job
+    # See: https://circleci.com/docs/configuration-reference/#steps
+    steps:
+      - checkout
+      - run:
+          name: install node 16.18.0
+          command: nvm install 16.18.0
+      - run:
+          name: "Build Android version of WebRTC"
+          command: "./tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
+      - run:
+          name: run npm
+          command: ls ~/srcjitsi/build_webrtc/build/ios
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
   build-release:
     jobs:
-      - dis-android-build
+#      - dis-android-build
+      - dis-ios-build
