@@ -100,11 +100,13 @@ fi
 RELEASE_TITLE="Kokomo WebRTC Release"
 
 if [[ $1 == "android" ]]; then
-  RELEASE_PATH=$(jq -r '."webrtc-builds"["android"]' package.json)
-  echo -e "Upload to" $RELEASE_PATH
+  # RELEASE_PATH=$(jq -r '."webrtc-builds"["android"]' package.json)
+  RELEASE_PATH=~/srcjitsi/build_webrtc/build/android
+  echo -e "Upload from: " $RELEASE_PATH
 else
-  RELEASE_PATH=$(jq -r '."webrtc-builds"["ios"]' package.json)
-  echo -e "Upload to" $RELEASE_PATH
+  # RELEASE_PATH=$(jq -r '."webrtc-builds"["ios"]' package.json)
+  RELEASE_PATH=~/srcjitsi/build_webrtc/build/ios
+  echo -e "Upload from: " $RELEASE_PATH
 fi
 
 # if [[ -z "$2" ]]; then
