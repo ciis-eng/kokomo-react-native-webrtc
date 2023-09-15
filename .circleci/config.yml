@@ -19,8 +19,8 @@ jobs:
       tag: 2022.09.1
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
+      PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - run:
@@ -39,8 +39,8 @@ jobs:
     resource_class: macos.m1.medium.gen1
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-    # Add steps to the job
-    # See: https://circleci.com/docs/configuration-reference/#steps
+      PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - run:
@@ -57,5 +57,7 @@ jobs:
 workflows:
   build-release:
     jobs:
-      - dis-android-build
-      - dis-ios-build
+      - dis-android-build:
+          context: kokomo-webrtc
+      - dis-ios-build:
+          context: kokomo-webrtc
