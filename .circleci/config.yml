@@ -16,7 +16,7 @@ jobs:
       - checkout
       - run:
           name: "Say hello"
-          command: "pwd;ls -al"
+          command: "tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
 
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
