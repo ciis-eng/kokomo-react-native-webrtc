@@ -101,18 +101,19 @@ def rmr(path):
 
 def setup_depot_tools(target_dir, platform):
     # copy jitsi depot_tools patch
-    sh('cp patches/depot_tools.patch /tmp/depot_tools.patch')
+    sh('cp tools/patches/depot_tools.patch /tmp/depot_tools.patch')
 
     mkdirp(target_dir)
     os.chdir(target_dir)
 
     # Maybe fetch depot_tools
     depot_tools_dir = os.path.join(target_dir, 'depot_tools')
+    
     if not os.path.isdir(depot_tools_dir):
         print('Fetching Chromium depot_tools...')
         sh('git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git')
         # apply depot_tools patch
-        sh('cd depot_tools && git apply < /tmp/depot_tools.patch')
+        sh('cd depot_tools && git apply --ignore-whitespace < /tmp/depot_tools.patch')
 
     # Prepare environment
     env = os.environ.copy()
@@ -121,10 +122,10 @@ def setup_depot_tools(target_dir, platform):
 def setup_src(target_dir, platform):
     # copy src patches
     mkdirp('/tmp/src')
-    sh('cp patches/src/* /tmp/src/')
+    sh('cp tools/patches/src/* /tmp/src/')
 
     # get jitsi tag branch from package.json "repoTag"
-    f = open("../package.json", "r")
+    f = open("package.json", "r")
     repoTag = json.loads(f.read())["repoTag"]
     print('git tag to use: %s' % repoTag)
 
@@ -157,7 +158,7 @@ def setup_src(target_dir, platform):
     for filename in os.scandir(srcPatchDir):
         if filename.is_file():
             dirFile = srcPatchDir + "/" + filename.name
-            sh('git apply < %s' % dirFile)
+            sh('git apply --ignore-whitespace < %s' % dirFile)
 
 def setup(target_dir, platform):
     mkdirp(target_dir)

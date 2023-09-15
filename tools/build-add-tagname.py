@@ -42,7 +42,7 @@ def rmr(path):
 
 def update_tag_name(tagName):
     # get package.json as JSON object
-    fIn = open("../package.json", "r")
+    fIn = open("package.json", "r")
 
     pkgJSON = json.loads(fIn.read())
 
@@ -61,7 +61,7 @@ def update_tag_name(tagName):
     jsonOut = json.dumps(pkgJSON, indent=2)
  
     # Writing to sample.json
-    with open("../package.json", "w") as fOut:
+    with open("package.json", "w") as fOut:
         fOut.write(jsonOut)
 
     fOut.close()
