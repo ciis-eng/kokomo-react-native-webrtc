@@ -6,7 +6,7 @@ import os
 import shutil
 import subprocess
 import sys
-
+import json
 
 # Constants
 
@@ -98,6 +98,67 @@ def rmr(path):
 
 
 # The Real Deal
+
+def setup_depot_tools(target_dir, platform):
+    # copy jitsi depot_tools patch
+    sh('cp tools/patches/depot_tools.patch /tmp/depot_tools.patch')
+
+    mkdirp(target_dir)
+    os.chdir(target_dir)
+
+    # Maybe fetch depot_tools
+    depot_tools_dir = os.path.join(target_dir, 'depot_tools')
+    
+    if not os.path.isdir(depot_tools_dir):
+        print('Fetching Chromium depot_tools...')
+        sh('git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git')
+        # apply depot_tools patch
+        sh('cd depot_tools && git apply --ignore-whitespace < /tmp/depot_tools.patch')
+
+    # Prepare environment
+    env = os.environ.copy()
+    env['PATH'] = '%s:%s' % (env['PATH'], depot_tools_dir)
+
+def setup_src(target_dir, platform):
+    # copy src patches
+    mkdirp('/tmp/src')
+    sh('cp tools/patches/src/* /tmp/src/')
+
+    # get jitsi tag branch from package.json "repoTag"
+    f = open("package.json", "r")
+    repoTag = json.loads(f.read())["repoTag"]
+    print('git tag to use: %s' % repoTag)
+
+    mkdirp(target_dir)
+    os.chdir(target_dir)
+
+    # Maybe fetch depot_tools
+    depot_tools_dir = os.path.join(target_dir, 'depot_tools')
+    if not os.path.isdir(depot_tools_dir):
+        print('Fetching Chromium depot_tools...')
+        sh('git clone https://chromium.googlesource.com/chromium/tools/depot_tools.git')
+
+    # Prepare environment
+    env = os.environ.copy()
+    env['PATH'] = '%s:%s' % (env['PATH'], depot_tools_dir)
+
+    # Maybe fetch WebRTC
+    webrtc_dir = os.path.join(target_dir, 'webrtc', platform)
+    if not os.path.isdir(webrtc_dir):
+        mkdirp(webrtc_dir)
+        os.chdir(webrtc_dir)
+        print('Fetching WebRTC for %s...' % platform)
+        sh('fetch --nohooks webrtc_%s' % platform, env)
+
+    # apply src patch(es for branch tag specified in package.json)
+    os.chdir(webrtc_dir + "/src")
+    sh('git checkout %s' % repoTag)
+        
+    srcPatchDir = "/tmp/src"
+    for filename in os.scandir(srcPatchDir):
+        if filename.is_file():
+            dirFile = srcPatchDir + "/" + filename.name
+            sh('git apply --ignore-whitespace < %s' % dirFile)
 
 def setup(target_dir, platform):
     mkdirp(target_dir)
@@ -297,6 +358,8 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument('dir', help='Target directory')
     parser.add_argument('--setup', help='Prepare the target directory for building', action='store_true')
+    parser.add_argument('--setup_depot_tools', help='Prepare the depot_tools directory', action='store_true')
+    parser.add_argument('--setup_src', help='Apply src patches', action='store_true')
     parser.add_argument('--build', help='Build WebRTC in the target directory', action='store_true')
     parser.add_argument('--sync', help='Runs gclient sync on the WebRTC directory', action='store_true')
     parser.add_argument('--ios', help='Use iOS as the target platform', action='store_true')
@@ -305,8 +368,8 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    if not (args.setup or args.build or args.sync):
-        print('--setup or --build must be specified!')
+    if not (args.setup or args.setup_depot_tools  or args.setup_src or args.build or args.sync):
+        print('--setup or setup_depot_tools or setup_src or --build must be specified!')
         sys.exit(1)
 
     if args.setup and args.build:
@@ -327,6 +390,16 @@ if __name__ == "__main__":
 
     target_dir = os.path.abspath(os.path.join(args.dir, 'build_webrtc'))
     platform = 'ios' if args.ios else 'android'
+
+    if args.setup_depot_tools:
+        setup_depot_tools(target_dir, platform)
+        print('WebRTC setup_depot_tools for %s completed in %s' % (platform, target_dir))
+        sys.exit(0)
+
+    if args.setup_src:
+        setup_src(target_dir, platform)
+        print('WebRTC setup_src for %s completed in %s' % (platform, target_dir))
+        sys.exit(0)
 
     if args.setup:
         setup(target_dir, platform)

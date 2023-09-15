@@ -1,6 +1,7 @@
 {
   "name": "react-native-webrtc",
-  "version": "111.0.3",
+  "version": "TestReleaseBuild",
+  "repoTag": "v111.0.2",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/react-native-webrtc/react-native-webrtc.git"
@@ -22,7 +23,9 @@
   "dependencies": {
     "base64-js": "1.5.1",
     "debug": "4.3.4",
-    "event-target-shim": "6.0.2"
+    "event-target-shim": "6.0.2",
+    "adm-zip": "0.5.9",
+    "tar": "6.1.11"
   },
   "peerDependencies": {
     "react-native": ">=0.60.0"
@@ -30,7 +33,8 @@
   "scripts": {
     "lint": "eslint --max-warnings 0 . && tsc --noEmit",
     "prepare": "husky install && bob build",
-    "format": "tools/format.sh"
+    "format": "tools/format.sh",
+    "postinstall": "node tools/downloadWebRTC.js"
   },
   "bugs": {
     "url": "https://github.com/react-native-webrtc/react-native-webrtc/issues"
@@ -60,5 +64,9 @@
       "module",
       "typescript"
     ]
+  },
+  "webrtc-builds": {
+    "android": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/TestReleaseBuild/android-webrtc.zip",
+    "ios": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/TestReleaseBuild/WebRTC.xcframework.zip"
   }
 }
