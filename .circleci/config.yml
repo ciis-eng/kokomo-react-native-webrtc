@@ -68,6 +68,6 @@ workflows:
           context: kokomo-webrtc
           filters:
             tags:
-              only: TestBuild/[0-9]/
+              only: /[A-Za-z0-9]/
             branches:
               ignore: /.*/          
