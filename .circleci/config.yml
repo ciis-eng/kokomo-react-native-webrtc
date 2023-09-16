@@ -65,7 +65,7 @@ workflows:
       #       branches:
       #         ignore: /.*/        
       - dis-ios-build:
-          # context: kokomo-webrtc
+          context: kokomo-webrtc
           filters:
             tags:
               only: /[A-Za-z0-9]/
