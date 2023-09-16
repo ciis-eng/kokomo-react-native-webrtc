@@ -101,12 +101,12 @@ RELEASE_TITLE="Kokomo WebRTC Release"
 
 if [[ $1 == "android" ]]; then
   # RELEASE_PATH=$(jq -r '."webrtc-builds"["android"]' package.json)
-  RELEASE_PATH=~/srcjitsi/build_webrtc/build/android
-  echo -e "Upload from: " $RELEASE_PATH
+  RELEASE_FILE=~/srcjitsi/build_webrtc/build/android/android-webrtc.zip
+  echo -e "Upload from: " $RELEASE_FILE
 else
   # RELEASE_PATH=$(jq -r '."webrtc-builds"["ios"]' package.json)
-  RELEASE_PATH=~/srcjitsi/build_webrtc/build/ios
-  echo -e "Upload from: " $RELEASE_PATH
+  RELEASE_FILE=~/srcjitsi/build_webrtc/build/ios/WebRTC.xcframework.zip
+  echo -e "Upload from: " $RELEASE_FILE
 fi
 
 # if [[ -z "$2" ]]; then
@@ -114,8 +114,8 @@ fi
 #       exit 1
 # fi
 
-if [ -z $RELEASE_PATH ]; then
-      echo "Script expects to be passed path to release artifacts"
+if [ -z $RELEASE_FILE ]; then
+      echo "Script expects to be passed file to release artifacts"
       exit 1
 fi
 
@@ -135,7 +135,7 @@ echo "Github Auth..."
 gh auth status
 
 echo "Github Create Release..."
-GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_PATH} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
+GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
 echo ${GH_RELEASE_URL}
 
 echo "done."
