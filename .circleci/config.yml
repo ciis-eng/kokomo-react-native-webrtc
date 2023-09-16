@@ -54,13 +54,6 @@ jobs:
 workflows:
   build-release:
     jobs:
-      # - dis-android-build:
-      #     context: kokomo-webrtc
-          # filters:
-          #   tags:
-          #     only: TestBuild/[0-9]/
-          #   branches:
-          #     ignore: /.*/  
       - dis-ios-build:
           context: kokomo-webrtc
           filters:
