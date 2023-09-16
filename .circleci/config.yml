@@ -64,10 +64,10 @@ workflows:
       #         only: TestBuild/[0-9]/
       #       branches:
       #         ignore: /.*/        
-      - dis-ios-build:
-          context: kokomo-webrtc
-          filters:
-            tags:
-              only: /[A-Za-z0-9]/
-            branches:
-              ignore: /.*/          
+      - dis-ios-build
+          # context: kokomo-webrtc
+          # filters:
+          #   tags:
+          #     only: /[A-Za-z0-9]/
+          #   branches:
+          #     ignore: /.*/          
