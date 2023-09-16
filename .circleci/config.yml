@@ -39,13 +39,13 @@ jobs:
     resource_class: macos.m1.medium.gen1
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-      PACKAGE_BUILD_KEYCHAIN: circle.keychain
-      shell: /bin/bash --login -eo pipefail
+      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      # shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
-      - run:
-          name: install node 16.18.0
-          command: nvm install 16.18.0
+      # - run:
+      #     name: install node 16.18.0
+      #     command: nvm install 16.18.0
       - run:
           name: "Build IOS version of WebRTC"
           command: "ls ~/srcjitsi/build_webrtc/build/ios; ./tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
@@ -54,10 +54,17 @@ jobs:
 workflows:
   build-release:
     jobs:
-      - dis-ios-build:
-          context: kokomo-webrtc
-          filters:
-            tags:
-              only: /[A-Za-z0-9]/
-            branches:
-              ignore: /.*/          
+      # - dis-android-build:
+      #     context: kokomo-webrtc
+      #     filters:
+      #       tags:
+      #         only: TestBuild/[0-9]/
+      #       branches:
+      #         ignore: /.*/        
+      - dis-ios-build
+          # context: kokomo-webrtc
+          # filters:
+          #   tags:
+          #     only: /[A-Za-z0-9]/
+          #   branches:
+          #     ignore: /.*/          
