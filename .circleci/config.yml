@@ -48,7 +48,10 @@ jobs:
       #     command: nvm install 16.18.0
       - run:
           name: "Build IOS version of WebRTC"
-          command: "ls ~/srcjitsi/build_webrtc/build/ios; ./tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
+          command: "./tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
+      - run:
+          name: run npm
+          command: ls ~/srcjitsi/build_webrtc/build/ios          
 # Orchestrate jobs using workflows
 # See: https://circleci.com/docs/configuration-reference/#workflows
 workflows:
@@ -61,10 +64,10 @@ workflows:
       #         only: TestBuild/[0-9]/
       #       branches:
       #         ignore: /.*/        
-      - dis-ios-build
-          # context: kokomo-webrtc
-          # filters:
-          #   tags:
-          #     only: /[A-Za-z0-9]/
-          #   branches:
-          #     ignore: /.*/          
+      - dis-ios-build:
+          context: kokomo-webrtc
+          filters:
+            tags:
+              only: /[A-Za-z0-9]/
+            branches:
+              ignore: /.*/          
