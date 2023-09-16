@@ -57,7 +57,7 @@ jobs:
 workflows:
   build-release:
     jobs:
-      - dis-android-build:
-          context: kokomo-webrtc
+ #     - dis-android-build:
+#          context: kokomo-webrtc
       - dis-ios-build:
           context: kokomo-webrtc
