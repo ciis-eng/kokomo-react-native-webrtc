@@ -114,7 +114,7 @@ fi
 #       exit 1
 # fi
 
-if [[ -z RELEASE_PATH]]; then
+if [ -z $RELEASE_PATH ]; then
       echo "Script expects to be passed path to release artifacts"
       exit 1
 fi
