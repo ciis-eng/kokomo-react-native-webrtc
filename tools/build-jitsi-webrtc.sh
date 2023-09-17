@@ -105,11 +105,13 @@ RELEASE_TITLE="Kokomo WebRTC Release"
 
 if [[ $1 == "android" ]]; then
   # RELEASE_PATH=$(jq -r '."webrtc-builds"["android"]' package.json)
-  RELEASE_FILE=~/srcjitsi/build_webrtc/build/android/android-webrtc.zip
+#   RELEASE_FILE=~/srcjitsi/build_webrtc/build/android/android-webrtc.zip
+  RELEASE_FILE=~/srcjitsi/build_webrtc/depot_tools/cipd_client_version.digests
   echo -e "Upload from: " $RELEASE_FILE
 else
   # RELEASE_PATH=$(jq -r '."webrtc-builds"["ios"]' package.json)
-  RELEASE_FILE=~/srcjitsi/build_webrtc/build/ios/WebRTC.xcframework.zip
+#   RELEASE_FILE=~/srcjitsi/build_webrtc/build/ios/WebRTC.xcframework.zip
+  RELEASE_FILE=~/srcjitsi/build_webrtc/depot_tools/whitespace.txt
   echo -e "Upload from: " $RELEASE_FILE
 fi
 
@@ -146,8 +148,7 @@ echo ${GH_RELEASE_URL}
 if [ $? -ne 0 ]; then
   echo "Error while trying to create github release (i.e. gh release create). Try uploading instead."
 
-  # gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
-  gh release upload  ${GIT_TAG_TO_USE} ~/srcjitsi/build_webrtc/depot_tools/whitespace.txt --clobber
+  gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
 
   if [ $? -ne 0 ]; then
     echo "Error while trying to upload lib file (i.e. gh release upload)"
