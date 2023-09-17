@@ -80,9 +80,9 @@ git checkout $CIRCLE_SHA1
 git status
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
-# git add package.json
-# git commit -m "updated library file names"
-# git push
+git add package.json
+git commit -m "updated library file names"
+git push
 
 exit 1
 
