@@ -25,6 +25,9 @@ jobs:
       #     name: install node 16.18.0
       #     command: nvm install 16.18.0
       - run:
+          name: "display pipeline.git.branch"
+          command: "echo << pipeline.git.branch >>"
+      - run:
           name: "Build Android version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh android"
       - run:
@@ -46,6 +49,9 @@ jobs:
       # - run:
       #     name: install node 16.18.0
       #     command: nvm install 16.18.0
+      - run:
+          name: "display pipeline.git.branch"
+          command: "echo << pipeline.git.branch >>"
       - run:
           name: "Build IOS version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh ios"
