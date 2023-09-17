@@ -74,9 +74,10 @@ fi
 # Commit & Push package.json changes to Github
 echo -e "git stuff:"
 pwd
-git status
 git remote -v
+echo -e $CIRCLE_BRANCH
 git checkout $CIRCLE_BRANCH
+git status
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
 # git add package.json
