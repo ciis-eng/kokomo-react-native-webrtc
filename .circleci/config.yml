@@ -5,32 +5,29 @@ version: 2.1
 orbs:
   slack: circleci/slack@2.5.0
   android: circleci/android@2.1.2
+  github-cli: circleci/github-cli@1.0.4
 
-# Define a job to be invoked later in a workflow.
-# See: https://circleci.com/docs/configuration-reference/#jobs
 jobs:
   dis-android-build:
     description: android build for DIS
-    # Specify the execution environment. You can specify an image from Docker Hub or use one of our convenience images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/configuration-reference/#executor-job
     executor:
       name: android/android-machine
       resource-class: large
       tag: 2022.09.1
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-      PACKAGE_BUILD_KEYCHAIN: circle.keychain
-      shell: /bin/bash --login -eo pipefail
+      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      # shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
-      - run:
-          name: install node 16.18.0
-          command: nvm install 16.18.0
+      # - run:
+      #     name: install node 16.18.0
+      #     command: nvm install 16.18.0
       - run:
           name: "Build Android version of WebRTC"
-          command: "./tools/build-jitsi-webrtc.sh android TestReleaseBuild"
+          command: "./tools/build-jitsi-webrtc.sh android"
       - run:
-          name: run npm
+          name: display library file
           command: ls ~/srcjitsi/build_webrtc/build/android
   dis-ios-build:
     description: IOS build for DIS
@@ -48,12 +45,10 @@ jobs:
       #     command: nvm install 16.18.0
       - run:
           name: "Build IOS version of WebRTC"
-          command: "./tools/build-jitsi-webrtc.sh ios TestReleaseBuild"
+          command: "./tools/build-jitsi-webrtc.sh ios"
       - run:
-          name: run npm
-          command: ls ~/srcjitsi/build_webrtc/build/ios          
-# Orchestrate jobs using workflows
-# See: https://circleci.com/docs/configuration-reference/#workflows
+          name: display library file
+          command: ls ~/srcjitsi/build_webrtc/build/ios
 workflows:
   build-release:
     jobs:
@@ -69,5 +64,5 @@ workflows:
           filters:
             tags:
               only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
-          #   branches:
-          #     ignore: /.*/          
+            branches:
+              ignore: /.*/          
