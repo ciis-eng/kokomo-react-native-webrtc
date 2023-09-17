@@ -147,7 +147,7 @@ gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --
 if [ $? -ne 0 ]; then
   echo "Error while trying to create github release (i.e. gh release create). Try uploading instead."
 
-  gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE}
+  gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
 
   if [ $? -ne 0 ]; then
     echo "Error while trying to upload lib file (i.e. gh release upload)"
