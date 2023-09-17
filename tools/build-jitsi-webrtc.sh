@@ -141,7 +141,7 @@ gh auth status
 echo "Github Create Release..."
 # GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
 # GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
-GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"
+GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}")
 echo ${GH_RELEASE_URL}
 # gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
 gh release upload  ${GIT_TAG_TO_USE} ~/srcjitsi/build_webrtc/depot_tools/whitespace.txt --clobber
