@@ -81,11 +81,11 @@ if __name__ == "__main__":
     update_tag_name(args.tagName)
     print('package.json updated for %s tagName' % args.tagName)
 
-    # Commit & Push package.json changes to Github
-    sh('git config user.name "CircleCI WebRTC Builder"')
-    sh('git config user.email niwamoto@ciis.canon.com')
-    sh('git add package.json')
-    sh('git commit -m "updated library file names"')
-    sh('git push')
+    # # Commit & Push package.json changes to Github
+    # sh('git config user.name "CircleCI WebRTC Builder"')
+    # sh('git config user.email niwamoto@ciis.canon.com')
+    # sh('git add package.json')
+    # sh('git commit -m "updated library file names"')
+    # sh('git push')
 
     sys.exit(0)
