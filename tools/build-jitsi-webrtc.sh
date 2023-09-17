@@ -75,8 +75,8 @@ fi
 echo -e "git stuff:"
 pwd
 git remote -v
-echo -e $pipeline.git.branch
-git checkout $pipeline.git.branch
+echo -e $CIRCLE_SHA1
+git checkout $CIRCLE_SHA1
 git status
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
