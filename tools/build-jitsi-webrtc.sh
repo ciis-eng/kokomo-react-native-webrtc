@@ -142,8 +142,9 @@ gh auth status
 
 echo "Github Create Release..."
 # GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
-GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
-echo ${GH_RELEASE_URL}
+# GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
+gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE}
+# echo ${GH_RELEASE_URL}
 
 if [ $? -ne 0 ]; then
   echo "Error while trying to create github release (i.e. gh release create). Try uploading instead."
