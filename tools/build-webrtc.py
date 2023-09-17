@@ -150,7 +150,7 @@ def setup_src(target_dir, platform):
         print('Fetching WebRTC for %s...' % platform)
         sh('fetch --nohooks webrtc_%s' % platform, env)
 
-    # apply src patch(es for branch tag specified in package.json)
+    # apply src patch(es) for branch tag specified in package.json
     os.chdir(webrtc_dir + "/src")
     sh('git checkout %s' % repoTag)
         
