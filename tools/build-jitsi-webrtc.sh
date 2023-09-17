@@ -133,13 +133,14 @@ else
 fi
 
 echo "Github Release Message: [${RELEASE_MESSAGE}]"
-echo "Release Artifacts: [${RELEASE_PATH}]"
+echo "Release Artifacts: [${RELEASE_FILE}]"
 
 echo "Github Auth..."
 gh auth status
 
 echo "Github Create Release..."
-GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
+# GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
+GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
 echo ${GH_RELEASE_URL}
 
 echo "done."
