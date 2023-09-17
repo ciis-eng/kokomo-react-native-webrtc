@@ -71,6 +71,18 @@ echo "Error while trying to update package.json with tagName"
 exit 1
 fi
 
+# Commit & Push package.json changes to Github
+echo -e "git stuff:"
+pwd
+git status
+git config user.name "CircleCI WebRTC Builder"
+git config user.email niwamoto@ciis.canon.com
+# git add package.json
+# git commit -m "updated library file names"
+# git push
+
+exit 1
+
 python3 tools/build-webrtc.py --setup_depot_tools --$1 ~/srcjitsi
 
 if [ $? -ne 0 ]; then
