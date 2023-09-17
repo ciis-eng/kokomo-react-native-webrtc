@@ -78,25 +78,25 @@ if [ $? -ne 0 ]; then
   exit 1
 fi    
 
-# That's okay if this fails -- can decide later whether to copy generating Android
-# dependencies from "setup" to "sync", and skip this step
-python3 tools/build-webrtc.py --setup --$1 ~/srcjitsi
+# # That's okay if this fails -- can decide later whether to copy generating Android
+# # dependencies from "setup" to "sync", and skip this step
+# python3 tools/build-webrtc.py --setup --$1 ~/srcjitsi
 
-python3 tools/build-webrtc.py --setup_src --$1 ~/srcjitsi
+# python3 tools/build-webrtc.py --setup_src --$1 ~/srcjitsi
 
-if [ $? -ne 0 ]; then
-  echo "Error while trying to checkout git tag or applying src patch(es)"
-  exit 1
-fi
+# if [ $? -ne 0 ]; then
+#   echo "Error while trying to checkout git tag or applying src patch(es)"
+#   exit 1
+# fi
 
-python3 tools/build-webrtc.py --sync --$1 ~/srcjitsi
+# python3 tools/build-webrtc.py --sync --$1 ~/srcjitsi
 
-if [ $? -ne 0 ]; then
-  echo "Error while trying to sync (i.e. gclient sync -D)"
-  exit 1
-fi
+# if [ $? -ne 0 ]; then
+#   echo "Error while trying to sync (i.e. gclient sync -D)"
+#   exit 1
+# fi
 
-python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
+# python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
 
 # Copy/Upload generated .zip file to appropriate place in repo
 # RELEASE_TITLE=$1
@@ -140,8 +140,11 @@ gh auth status
 
 echo "Github Create Release..."
 # GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
-GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
+# GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
+GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"
 echo ${GH_RELEASE_URL}
+# gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
+gh release upload  ${GIT_TAG_TO_USE} ~/srcjitsi/build_webrtc/depot_tools/whitespace.txt --clobber
 
 echo "done."
 
