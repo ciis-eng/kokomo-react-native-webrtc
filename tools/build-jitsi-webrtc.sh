@@ -140,11 +140,20 @@ gh auth status
 
 echo "Github Create Release..."
 # GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE} ${RELEASE_PATH}'/notarization_request.txt#Notarization Request ID')
-# GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
-GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}")
+GH_RELEASE_URL=$(gh release create ${GIT_TAG_TO_USE} --prerelease --notes "${RELEASE_MESSAGE}" --title "${RELEASE_TITLE}"  ${RELEASE_FILE})
 echo ${GH_RELEASE_URL}
-# gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
-gh release upload  ${GIT_TAG_TO_USE} ~/srcjitsi/build_webrtc/depot_tools/whitespace.txt --clobber
+
+if [ $? -ne 0 ]; then
+  echo "Error while trying to create github release (i.e. gh release create). Try uploading instead."
+
+  # gh release upload  ${GIT_TAG_TO_USE} ${RELEASE_FILE} --clobber
+  gh release upload  ${GIT_TAG_TO_USE} ~/srcjitsi/build_webrtc/depot_tools/whitespace.txt --clobber
+
+  if [ $? -ne 0 ]; then
+    echo "Error while trying to upload lib file (i.e. gh release upload)"
+    exit 1
+  fi
+fi
 
 echo "done."
 
