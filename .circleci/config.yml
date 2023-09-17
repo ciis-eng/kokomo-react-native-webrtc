@@ -5,7 +5,7 @@ version: 2.1
 orbs:
   slack: circleci/slack@2.5.0
   android: circleci/android@2.1.2
-  github-cli: circleci/github-cli@1.0.4
+  github-cli: circleci/github-cli@1.1.0
 
 jobs:
   dis-android-build:
