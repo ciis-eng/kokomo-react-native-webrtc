@@ -83,7 +83,7 @@ if __name__ == "__main__":
 
     # Commit & Push package.json changes to Github
     sh('git config user.name "CircleCI WebRTC Builder"')
-    # sh('git config --global user.email you@example.com')
+    sh('git config user.email niwamoto@ciis.canon.com')
     sh('git add package.json')
     sh('git commit -m "updated library file names"')
     sh('git push')
