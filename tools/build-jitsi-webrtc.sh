@@ -2,22 +2,73 @@
 
 # --- check args
 if [ -z "$1" ]; then
-        echo -e 'Platform (ios or android) arg is required. Second param "tagName" will set the tagName in package.json.'
-        echo -e 'Usage: bash build-jitsi-webrtc.sh [ios | android] [tagName]'
+        echo -e 'Platform (ios or android) arg is required. '
+        echo -e 'Usage: bash build-jitsi-webrtc.sh [ios | android]'
         exit 1
 fi
 
 mkdir -p ~/srcjitsi
 
-if [ -n "$2" ]; then
-  echo -e "Updating tagName: " $2
-  
-  python3 tools/build-add-tagname.py $2
+# Setup tagName
+EXACT_MATCH_FOUND=false
+GIT_TAG_TO_USE=""
 
-  if [ $? -ne 0 ]; then
-    echo "Error while trying to update package.json with tagName"
-    exit 1
-  fi
+if [[ "$CIRCLE_TAG" != "" ]]; then
+      echo "CIRCLE_TAG found [${CIRCLE_TAG}]."
+      GIT_TAG_TO_USE=$CIRCLE_TAG
+      EXACT_MATCH_FOUND=true
+elif [[ "$CIRCLE_SHA1" != "" ]]; then
+      echo "CIRCLE_TAG NOT found. Using checking commit hash..."
+
+      if [[ "$CIRCLE_SHA1" == "" ]]; then
+            echo "Cannot get git commit hash. Exiting."
+            exit 0
+      fi
+
+      GIT_COMMIT_HASH=$CIRCLE_SHA1
+      echo "Git Commit Hash: [${GIT_COMMIT_HASH}]"
+
+      LATEST_GIT_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
+      echo "Latest Git Tag: [${LATEST_GIT_TAG}]"
+      GIT_TAG_TO_USE=$LATEST_GIT_TAG
+
+      # search for tag
+      REF_LIST=$(git show-ref | grep $GIT_COMMIT_HASH)
+      THE_LIST=($REF_LIST)
+      THE_LIST_LEN=${#THE_LIST[@]}
+      for (( COUNTER=0; COUNTER<$THE_LIST_LEN; COUNTER++ )); do 
+            HASH=${THE_LIST[$COUNTER]}
+            ITEM=${THE_LIST[$COUNTER+1]}
+            (( COUNTER++ ))
+            if [[ "$ITEM" == "refs/tags/"${LATEST_GIT_TAG} ]]; then
+                  echo tag-found:${LATEST_GIT_TAG}
+                  EXACT_MATCH_FOUND=true
+                  break
+            fi
+      done
+else
+      # Use default tagName
+      GIT_TAG_TO_USE="TestReleaseBuild"
+fi
+
+if [[ "$GIT_TAG_TO_USE" == "" ]]; then
+      echo "No Git Tag found. Exiting"
+      exit 0
+fi
+
+if [[ "$GITHUB_TOKEN" == "" ]]; then
+      echo "Github token isn't set"
+      exit 1
+fi
+
+# Set tagName into package.json
+echo -e "Updating tagName: " $GIT_TAG_TO_USE
+
+python3 tools/build-add-tagname.py $GIT_TAG_TO_USE
+
+if [ $? -ne 0 ]; then
+echo "Error while trying to update package.json with tagName"
+exit 1
 fi
 
 python3 tools/build-webrtc.py --setup_depot_tools --$1 ~/srcjitsi
@@ -48,53 +99,6 @@ fi
 python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
 
 # Copy/Upload generated .zip file to appropriate place in repo
-EXACT_MATCH_FOUND=false
-GIT_TAG_TO_USE=""
-if [[ "$CIRCLE_TAG" != "" ]]; then
-      echo "CIRCLE_TAG found [${CIRCLE_TAG}]."
-      GIT_TAG_TO_USE=$CIRCLE_TAG
-      EXACT_MATCH_FOUND=true
-else
-      echo "CIRCLE_TAG NOT found. Using checking commit hash..."
-
-      if [[ "$CIRCLE_SHA1" == "" ]]; then
-            echo "Cannot get git commit hash. Exiting."
-            exit 0
-      fi
-
-      GIT_COMMIT_HASH=$CIRCLE_SHA1
-      echo "Git Commit Hash: [${GIT_COMMIT_HASH}]"
-
-      LATEST_GIT_TAG=$(git describe --tags $(git rev-list --tags --max-count=1))
-      echo "Latest Git Tag: [${LATEST_GIT_TAG}]"
-      GIT_TAG_TO_USE=$LATEST_GIT_TAG
-
-      # search for tag
-      REF_LIST=$(git show-ref | grep $GIT_COMMIT_HASH)
-      THE_LIST=($REF_LIST)
-      THE_LIST_LEN=${#THE_LIST[@]}
-      for (( COUNTER=0; COUNTER<$THE_LIST_LEN; COUNTER++ )); do 
-            HASH=${THE_LIST[$COUNTER]}
-            ITEM=${THE_LIST[$COUNTER+1]}
-            (( COUNTER++ ))
-            if [[ "$ITEM" == "refs/tags/"${LATEST_GIT_TAG} ]]; then
-                  echo tag-found:${LATEST_GIT_TAG}
-                  EXACT_MATCH_FOUND=true
-                  break
-            fi
-      done
-fi
-
-if [[ "$GIT_TAG_TO_USE" == "" ]]; then
-      echo "No Git Tag found. Exiting"
-      exit 0
-fi
-
-if [[ "$GITHUB_TOKEN" == "" ]]; then
-      echo "Github token isn't set"
-      exit 1
-fi
-
 # RELEASE_TITLE=$1
 # RELEASE_PATH=$2
 RELEASE_TITLE="Kokomo WebRTC Release"
@@ -123,7 +127,7 @@ echo "Github Release Title: [${RELEASE_TITLE}]"
 
 if [[ "$EXACT_MATCH_FOUND" == "false" ]]; then
       echo "##### Latest Tag [${LATEST_GIT_TAG}] doesn't match commit hash [${GIT_COMMIT_HASH}]"
-      RELEASE_MESSAGE="CircleCI Build of ${CIRCLE_PROJECT_REPONAME}:${GIT_COMMIT_HASH}:${GIT_TAG_TO_USE}(Tag was derived from commit hash):${CIRCLE_BUILD_URL}"
+      RELEASE_MESSAGE="CircleCI Build of ${CIRCLE_PROJECT_REPONAME}:${GIT_COMMIT_HASH}:${GIT_TAG_TO_USE}(Generated tagName was used):${CIRCLE_BUILD_URL}"
 else
       RELEASE_MESSAGE="CircleCI Build of ${CIRCLE_PROJECT_REPONAME}:${GIT_COMMIT_HASH}:${GIT_TAG_TO_USE}:${CIRCLE_BUILD_URL}"
 fi
