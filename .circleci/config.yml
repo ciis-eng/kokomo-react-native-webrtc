@@ -20,6 +20,7 @@ jobs:
       # shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
+      - github-cli/setup      
       # - run:
       #     name: install node 16.18.0
       #     command: nvm install 16.18.0
@@ -40,6 +41,7 @@ jobs:
       # shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
+      - github-cli/setup      
       # - run:
       #     name: install node 16.18.0
       #     command: nvm install 16.18.0
