@@ -76,8 +76,8 @@ echo -e "git stuff:"
 pwd
 git remote -v
 echo -e $CIRCLE_SHA1
-git checkout $CIRCLE_SHA1
-git status
+git checkout $CIRCLE_SHA1 -b $CIRCLE_SHA1
+git branch
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
 git add package.json
