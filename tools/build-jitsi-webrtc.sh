@@ -75,6 +75,8 @@ fi
 echo -e "git stuff:"
 pwd
 git status
+git remote -v
+git checkout $CIRCLE_BRANCH
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
 # git add package.json
