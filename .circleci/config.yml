@@ -24,9 +24,16 @@ jobs:
       # - run:
       #     name: install node 16.18.0
       #     command: nvm install 16.18.0
-      - run:
-          name: "display pipeline.git.branch"
-          command: "echo << pipeline.git.branch >>"
+      - run: 
+          name: Determine commit ID & build branch
+          # determine branch from tag using commit ID. 
+          # Note: "git branch -a --contains <tag>" could return multiple entries
+          #       however, since the pipeline runs right after the tag is comminted
+          #       this should not become an issue
+          command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
+                   && TMP=$(git branch -a --contains $COMMIT) 
+                   && BRANCH="${TMP##*/}" 
+                   && echo "Building branch $BRANCH"
       - run:
           name: "Build Android version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh android"
@@ -36,9 +43,10 @@ jobs:
   dis-ios-build:
     description: IOS build for DIS
     macos:
-      # xcode: 14.2.0 # Specify the Xcode version to use
-      xcode: 12.5.1
+      xcode: 14.2.0 # Specify the Xcode version to use
+      # xcode: 12.5.1
     # resource_class: macos.m1.medium.gen1
+    resource_class: macos.x86.medium.gen2    
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
       # PACKAGE_BUILD_KEYCHAIN: circle.keychain
@@ -49,9 +57,16 @@ jobs:
       # - run:
       #     name: install node 16.18.0
       #     command: nvm install 16.18.0
-      - run:
-          name: "display pipeline.git.branch"
-          command: "echo << pipeline.git.branch >>"
+      - run: 
+          name: Determine commit ID & build branch
+          # determine branch from tag using commit ID. 
+          # Note: "git branch -a --contains <tag>" could return multiple entries
+          #       however, since the pipeline runs right after the tag is comminted
+          #       this should not become an issue
+          command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
+                   && TMP=$(git branch -a --contains $COMMIT) 
+                   && BRANCH="${TMP##*/}" 
+                   && echo "Building branch $BRANCH"
       - run:
           name: "Build IOS version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh ios"
