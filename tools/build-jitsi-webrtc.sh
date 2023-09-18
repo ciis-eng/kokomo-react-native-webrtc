@@ -20,11 +20,6 @@ if [[ "$CIRCLE_TAG" != "" ]]; then
 elif [[ "$CIRCLE_SHA1" != "" ]]; then
       echo "CIRCLE_TAG NOT found. Using checking commit hash..."
 
-      if [[ "$CIRCLE_SHA1" == "" ]]; then
-            echo "Cannot get git commit hash. Exiting."
-            exit 0
-      fi
-
       GIT_COMMIT_HASH=$CIRCLE_SHA1
       echo "Git Commit Hash: [${GIT_COMMIT_HASH}]"
 
@@ -75,8 +70,9 @@ fi
 echo -e "git stuff:"
 pwd
 git remote -v
-echo -e $CIRCLE_SHA1
-git checkout $CIRCLE_SHA1 -b $CIRCLE_SHA1
+branchName=$(git branch --contains "${CIRCLE_SHA1}")
+echo -e $branchName
+git checkout $branchName
 git branch
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
