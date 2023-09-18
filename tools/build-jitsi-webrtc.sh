@@ -51,39 +51,37 @@ if [[ "$GIT_TAG_TO_USE" == "" ]]; then
       exit 0
 fi
 
-# if [[ "$GITHUB_TOKEN" == "" ]]; then
-#       echo "Github token isn't set"
-#       exit 1
-# fi
-
-# Set tagName into package.json
-echo -e "Updating tagName: " $GIT_TAG_TO_USE
-
-python3 tools/build-add-tagname.py $GIT_TAG_TO_USE
-
-if [ $? -ne 0 ]; then
-echo "Error while trying to update package.json with tagName"
-exit 1
+if [[ "$GITHUB_TOKEN" == "" ]]; then
+      echo "Github token isn't set"
+      exit 1
 fi
 
-# Commit & Push package.json changes to Github
-echo -e "git stuff:"
-echo "BRANCH envar: " $BRANCH
-pwd
-git remote -v
-echo -e $CIRCLE_SHA1
-TMP=$(git branch -a --contains $CIRCLE_SHA1)
-branchName="${TMP##*/}"
-echo -e $branchName
-git checkout $branchName
-git branch
-git config user.name "CircleCI WebRTC Builder"
-git config user.email niwamoto@ciis.canon.com
-git add package.json
-git commit -m "updated library file URLs"
-git push
+# # Set tagName into package.json
+# echo -e "Updating tagName: " $GIT_TAG_TO_USE
 
-exit 1
+# python3 tools/build-add-tagname.py $GIT_TAG_TO_USE
+
+# if [ $? -ne 0 ]; then
+# echo "Error while trying to update package.json with tagName"
+# exit 1
+# fi
+
+# # Commit & Push package.json changes to Github
+# echo -e "git stuff:"
+# echo "BRANCH envar: " $BRANCH
+# pwd
+# git remote -v
+# echo -e $CIRCLE_SHA1
+# TMP=$(git branch -a --contains $CIRCLE_SHA1)
+# branchName="${TMP##*/}"
+# echo -e $branchName
+# git checkout $branchName
+# git branch
+# git config user.name "CircleCI WebRTC Builder"
+# git config user.email niwamoto@ciis.canon.com
+# git add package.json
+# git commit -m "updated library file URLs"
+# git push
 
 python3 tools/build-webrtc.py --setup_depot_tools --$1 ~/srcjitsi
 
