@@ -83,6 +83,8 @@ fi
 # git commit -m "updated library file URLs"
 # git push
 
+exit 1
+
 python3 tools/build-webrtc.py --setup_depot_tools --$1 ~/srcjitsi
 
 if [ $? -ne 0 ]; then
