@@ -18,6 +18,10 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       # PACKAGE_BUILD_KEYCHAIN: circle.keychain
       shell: /bin/bash --login -eo pipefail
+    parameters:
+      tag-or-branch:
+        type: env_var_name
+        default: BRANCH      
     steps:
       - checkout
       - github-cli/setup      
@@ -32,7 +36,7 @@ jobs:
           #       this should not become an issue
           command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
                    && TMP=$(git branch -a --contains $COMMIT) 
-                   && BRANCH="${TMP##*/}" 
+                   && export BRANCH="${TMP##*/}" 
                    && echo "Building branch $BRANCH"
       - run:
           name: "Build Android version of WebRTC"
@@ -51,6 +55,10 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       # PACKAGE_BUILD_KEYCHAIN: circle.keychain
       shell: /bin/bash --login -eo pipefail
+    parameters:
+      tag-or-branch:
+        type: env_var_name
+        default: BRANCH          
     steps:
       - checkout
       - github-cli/setup      
@@ -65,7 +73,7 @@ jobs:
           #       this should not become an issue
           command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
                    && TMP=$(git branch -a --contains $COMMIT) 
-                   && BRANCH="${TMP##*/}" 
+                   && export BRANCH="${TMP##*/}" 
                    && echo "Building branch $BRANCH"
       - run:
           name: "Build IOS version of WebRTC"
