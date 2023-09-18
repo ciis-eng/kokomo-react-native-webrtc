@@ -8,6 +8,32 @@ orbs:
   github-cli: circleci/github-cli@1.0.4
 
 jobs:
+  dis-update-package:
+    description: Update package.json file w/tag name
+    machine: # executor type
+      image: ubuntu-2004:202010-01 # recommended linux 
+    resource_class: small      
+    steps:
+      - checkout
+      - run:
+          name: Update package.json with CIRCLE_TAG
+          command: python3 tools/build-jitsi-webrtc.sh $CIRCLE_TAG
+      # - run: 
+      #     name: Determine commit ID & build branch then commit & push to repo
+      #     # determine branch from tag using commit ID. 
+      #     # Note: "git branch -a --contains <tag>" could return multiple entries
+      #     #       however, since the pipeline runs right after the tag is comminted
+      #     #       this should not become an issue
+      #     command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
+      #              && TMP=$(git branch -a --contains $COMMIT) 
+      #              && export BRANCH="${TMP##*/}" 
+      #              && echo "Building branch $BRANCH"
+      #              && git config user.name "CircleCI WebRTC Builder"
+      #              && git config user.email cloud-ops@cusa.canon.com
+      #              && git checkout $BRANCH
+      #              && git add package.json
+      #              && git commit -m "updated library file URLs"
+      #              && git push
   dis-android-build:
     description: android build for DIS
     executor:
@@ -84,17 +110,24 @@ jobs:
 workflows:
   build-release:
     jobs:
-      - dis-android-build:
-          context: kokomo-webrtc
-          filters:
-            tags:
-              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
-            branches:
-              ignore: /.*/        
-      - dis-ios-build:
-          context: kokomo-webrtc
-          filters:
-            tags:
-              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
-            branches:
-              ignore: /.*/          
+      - dis-update-package
+          # context: kokomo-webrtc
+          # filters:
+          #   tags:
+          #     only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
+          #   branches:
+          #     ignore: /.*/         
+      # - dis-android-build:
+      #     context: kokomo-webrtc
+      #     filters:
+      #       tags:
+      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
+      #       branches:
+      #         ignore: /.*/        
+      # - dis-ios-build:
+      #     context: kokomo-webrtc
+      #     filters:
+      #       tags:
+      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
+      #       branches:
+      #         ignore: /.*/          
