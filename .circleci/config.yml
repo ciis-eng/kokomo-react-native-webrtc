@@ -110,13 +110,13 @@ jobs:
 workflows:
   build-release:
     jobs:
-      - dis-update-package
-          # context: kokomo-webrtc
-          # filters:
-          #   tags:
-          #     only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
-          #   branches:
-          #     ignore: /.*/         
+      - dis-update-package:
+          context: kokomo-webrtc
+          filters:
+            tags:
+              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
+            branches:
+              ignore: /.*/         
       # - dis-android-build:
       #     context: kokomo-webrtc
       #     filters:
