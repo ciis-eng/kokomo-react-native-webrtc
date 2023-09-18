@@ -10,13 +10,17 @@ orbs:
 jobs:
   dis-update-package:
     description: Update package.json file w/tag name
-    machine: # executor type
-      image: ubuntu-2004:202010-01 # recommended linux 
-    resource_class: small
-    # environment:
-    #   HOMEBREW_NO_AUTO_UPDATE: 1
-    #   # PACKAGE_BUILD_KEYCHAIN: circle.keychain
-    #   shell: /bin/bash --login -eo pipefail       
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2022.09.1    
+    # machine: # executor type
+    #   image: ubuntu-2004:202010-01 # recommended linux 
+    # resource_class: small
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      shell: /bin/bash --login -eo pipefail       
     steps:
       - checkout
       - github-cli/setup
