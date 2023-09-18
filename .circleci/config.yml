@@ -37,8 +37,8 @@ jobs:
                    && TMP=$(git branch -a --contains $COMMIT) 
                    && export BRANCH="${TMP##*/}" 
                    && echo "Updating package.json for branch $BRANCH"
-                   && git config user.name "ciis-eng"
-                   && git config user.email cloud-ops@cusa.canon.com
+                   && git config --global user.name ciis-eng
+                   && git config --global user.email cloud-ops@cusa.canon.com
                    && git checkout $BRANCH
                    && git add package.json
                    && git commit -m "updated library file URLs"
