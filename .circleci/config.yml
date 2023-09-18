@@ -12,7 +12,11 @@ jobs:
     description: Update package.json file w/tag name
     machine: # executor type
       image: ubuntu-2004:202010-01 # recommended linux 
-    resource_class: small      
+    resource_class: small
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      shell: /bin/bash --login -eo pipefail       
     steps:
       - checkout
       - run:
@@ -118,13 +122,17 @@ workflows:
             branches:
               ignore: /.*/         
       # - dis-android-build:
+      #     requires:
+      #       - dis-update-package
       #     context: kokomo-webrtc
       #     filters:
       #       tags:
       #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
       #       branches:
-      #         ignore: /.*/        
+      #         ignore: /.*/            
       # - dis-ios-build:
+      #     requires:
+      #       - dis-update-package
       #     context: kokomo-webrtc
       #     filters:
       #       tags:
