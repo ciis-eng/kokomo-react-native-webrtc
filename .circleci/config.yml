@@ -13,12 +13,13 @@ jobs:
     machine: # executor type
       image: ubuntu-2004:202010-01 # recommended linux 
     resource_class: small
-    environment:
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
-      shell: /bin/bash --login -eo pipefail       
+    # environment:
+    #   HOMEBREW_NO_AUTO_UPDATE: 1
+    #   # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+    #   shell: /bin/bash --login -eo pipefail       
     steps:
       - checkout
+      - github-cli/setup
       - run:
           name: Update package.json with CIRCLE_TAG
           command: "python3 tools/build-add-tagname.py ${CIRCLE_TAG}"
