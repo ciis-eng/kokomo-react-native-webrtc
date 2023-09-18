@@ -48,26 +48,9 @@ jobs:
       HOMEBREW_NO_AUTO_UPDATE: 1
       # PACKAGE_BUILD_KEYCHAIN: circle.keychain
       shell: /bin/bash --login -eo pipefail
-    parameters:
-      tag-or-branch:
-        type: env_var_name
-        default: BRANCH      
     steps:
       - checkout
-      - github-cli/setup      
-      # - run:
-      #     name: install node 16.18.0
-      #     command: nvm install 16.18.0
-      - run: 
-          name: Determine commit ID & build branch
-          # determine branch from tag using commit ID. 
-          # Note: "git branch -a --contains <tag>" could return multiple entries
-          #       however, since the pipeline runs right after the tag is comminted
-          #       this should not become an issue
-          command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
-                   && TMP=$(git branch -a --contains $COMMIT) 
-                   && export BRANCH="${TMP##*/}" 
-                   && echo "Building branch $BRANCH"
+      - github-cli/setup
       - run:
           name: "Build Android version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh android"
@@ -78,33 +61,15 @@ jobs:
     description: IOS build for DIS
     macos:
       xcode: 14.2.0 # Specify the Xcode version to use
-      # xcode: 12.5.1
     # resource_class: macos.m1.medium.gen1
     resource_class: macos.x86.medium.gen2    
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
       # PACKAGE_BUILD_KEYCHAIN: circle.keychain
       shell: /bin/bash --login -eo pipefail
-    parameters:
-      tag-or-branch:
-        type: env_var_name
-        default: BRANCH          
     steps:
       - checkout
-      - github-cli/setup      
-      # - run:
-      #     name: install node 16.18.0
-      #     command: nvm install 16.18.0
-      - run: 
-          name: Determine commit ID & build branch
-          # determine branch from tag using commit ID. 
-          # Note: "git branch -a --contains <tag>" could return multiple entries
-          #       however, since the pipeline runs right after the tag is comminted
-          #       this should not become an issue
-          command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
-                   && TMP=$(git branch -a --contains $COMMIT) 
-                   && export BRANCH="${TMP##*/}" 
-                   && echo "Building branch $BRANCH"
+      - github-cli/setup
       - run:
           name: "Build IOS version of WebRTC"
           command: "./tools/build-jitsi-webrtc.sh ios"
@@ -114,28 +79,28 @@ jobs:
 workflows:
   build-release:
     jobs:
-      # - dis-update-package:
-      #     context: kokomo-webrtc
-      #     filters:
-      #       tags:
-      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
-      #       branches:
-      #         ignore: /.*/         
-      - dis-android-build:
-          # requires:
-          #   - dis-update-package
+      - dis-update-package:
           context: kokomo-webrtc
           filters:
             tags:
               only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
             branches:
-              ignore: /.*/            
-      - dis-ios-build:
-          # requires:
-          #   - dis-update-package
-          context: kokomo-webrtc
-          filters:
-            tags:
-              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
-            branches:
-              ignore: /.*/          
+              ignore: /.*/
+      # - dis-android-build:
+      #     requires:
+      #       - dis-update-package
+      #     context: kokomo-webrtc
+      #     filters:
+      #       tags:
+      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
+      #       branches:
+      #         ignore: /.*/            
+      # - dis-ios-build:
+      #     requires:
+      #       - dis-update-package
+      #     context: kokomo-webrtc
+      #     filters:
+      #       tags:
+      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
+      #       branches:
+      #         ignore: /.*/          
