@@ -68,17 +68,19 @@ fi
 
 # Commit & Push package.json changes to Github
 echo -e "git stuff:"
+echo "BRANCH envar: " $BRANCH
 pwd
 git remote -v
 echo -e $CIRCLE_SHA1
-branchName=$(git branch --contains "${CIRCLE_SHA1}")
+TMP=$(git branch -a --contains $CIRCLE_SHA1)
+branchName="${TMP##*/}"
 echo -e $branchName
 git checkout $branchName
 git branch
 git config user.name "CircleCI WebRTC Builder"
 git config user.email niwamoto@ciis.canon.com
 git add package.json
-git commit -m "updated library file names"
+git commit -m "updated library file URLs"
 git push
 
 exit 1
