@@ -17,23 +17,23 @@ jobs:
       - checkout
       - run:
           name: Update package.json with CIRCLE_TAG
-          command: "echo -e ${CIRCLE_TAG}; python3 tools/build-add-tagname.py ${CIRCLE_TAG}"
-      # - run: 
-      #     name: Determine commit ID & build branch then commit & push to repo
-      #     # determine branch from tag using commit ID. 
-      #     # Note: "git branch -a --contains <tag>" could return multiple entries
-      #     #       however, since the pipeline runs right after the tag is comminted
-      #     #       this should not become an issue
-      #     command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
-      #              && TMP=$(git branch -a --contains $COMMIT) 
-      #              && export BRANCH="${TMP##*/}" 
-      #              && echo "Building branch $BRANCH"
-      #              && git config user.name "CircleCI WebRTC Builder"
-      #              && git config user.email cloud-ops@cusa.canon.com
-      #              && git checkout $BRANCH
-      #              && git add package.json
-      #              && git commit -m "updated library file URLs"
-      #              && git push
+          command: "python3 tools/build-add-tagname.py ${CIRCLE_TAG}"
+      - run: 
+          name: Determine commit ID & build branch then commit & push to repo
+          # determine branch from tag using commit ID. 
+          # Note: "git branch -a --contains <tag>" could return multiple entries
+          #       however, since the pipeline runs right after the tag is comminted
+          #       this should not become an issue
+          command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
+                   && TMP=$(git branch -a --contains $COMMIT) 
+                   && export BRANCH="${TMP##*/}" 
+                   && echo "Updating package.json for branch $BRANCH"
+                   && git config user.name "CircleCI WebRTC Builder"
+                   && git config user.email cloud-ops@cusa.canon.com
+                   && git checkout $BRANCH
+                   && git add package.json
+                   && git commit -m "updated library file URLs"
+                   && git push
   dis-android-build:
     description: android build for DIS
     executor:
