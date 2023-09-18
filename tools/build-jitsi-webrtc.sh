@@ -51,10 +51,10 @@ if [[ "$GIT_TAG_TO_USE" == "" ]]; then
       exit 0
 fi
 
-if [[ "$GITHUB_TOKEN" == "" ]]; then
-      echo "Github token isn't set"
-      exit 1
-fi
+# if [[ "$GITHUB_TOKEN" == "" ]]; then
+#       echo "Github token isn't set"
+#       exit 1
+# fi
 
 # Set tagName into package.json
 echo -e "Updating tagName: " $GIT_TAG_TO_USE
@@ -70,6 +70,7 @@ fi
 echo -e "git stuff:"
 pwd
 git remote -v
+echo -e $CIRCLE_SHA1
 branchName=$(git branch --contains "${CIRCLE_SHA1}")
 echo -e $branchName
 git checkout $branchName
