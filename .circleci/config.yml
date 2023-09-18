@@ -17,7 +17,7 @@ jobs:
       - checkout
       - run:
           name: Update package.json with CIRCLE_TAG
-          command: python3 tools/build-jitsi-webrtc.sh $CIRCLE_TAG
+          command: python3 tools/build-add-tagname.py $CIRCLE_TAG
       # - run: 
       #     name: Determine commit ID & build branch then commit & push to repo
       #     # determine branch from tag using commit ID. 
