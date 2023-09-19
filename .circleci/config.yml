@@ -14,16 +14,16 @@ jobs:
       name: android/android-machine
       resource-class: large
       tag: 2022.09.1
-    # environment:
-    #   HOMEBREW_NO_AUTO_UPDATE: 1
-    #   # PACKAGE_BUILD_KEYCHAIN: circle.keychain
-    #   shell: /bin/bash --login -eo pipefail
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - github-cli/setup
       - run:
           name: "Build Android version of WebRTC"
-          command: ./tools/release-webrtc.sh android
+          command: bash tools/release-webrtc.sh android
   dis-ios-build:
     description: IOS build for DIS
     macos:
@@ -38,7 +38,7 @@ jobs:
       - github-cli/setup
       - run:
           name: "Build IOS version of WebRTC"
-          command: ./tools/release-webrtc.sh ios
+          command: bash tools/release-webrtc.sh ios
 workflows:
   build-release:
     jobs:
