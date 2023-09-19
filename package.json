@@ -1,7 +1,7 @@
 {
   "name": "react-native-webrtc",
   "version": "111.0.2",
-  "tagName": "release-999.0.3-rc.1",
+  "tagName": "release-999.0.4-rc.1",
   "repoTag": "v111.0.2",
   "repository": {
     "type": "git",
@@ -67,7 +67,7 @@
     ]
   },
   "webrtc-builds": {
-    "android": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/release-999.0.3-rc.1/android-webrtc.zip",
-    "ios": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/release-999.0.3-rc.1/WebRTC.xcframework.zip"
+    "android": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/release-999.0.4-rc.1/android-webrtc.zip",
+    "ios": "https://github.com/ciis-eng/kokomo-react-native-webrtc/releases/download/release-999.0.4-rc.1/WebRTC.xcframework.zip"
   }
 }
