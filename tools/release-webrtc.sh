@@ -71,8 +71,6 @@ if [ $? -ne 0 ]; then
   exit 1
 fi    
 
-exit 1
-
 # That's okay if this fails -- can decide later whether to copy generating Android
 # dependencies from "setup" to "sync", and skip this step
 python3 tools/build-webrtc.py --setup --$1 ~/srcjitsi
@@ -97,11 +95,9 @@ python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
 RELEASE_TITLE="Kokomo WebRTC Release"
 
 if [[ $1 == "android" ]]; then
-  # RELEASE_PATH=$(jq -r '."webrtc-builds"["android"]' package.json)
   RELEASE_FILE=~/srcjitsi/build_webrtc/build/android/android-webrtc.zip
   echo -e "Upload from: " $RELEASE_FILE
 else
-  # RELEASE_PATH=$(jq -r '."webrtc-builds"["ios"]' package.json)
   RELEASE_FILE=~/srcjitsi/build_webrtc/build/ios/WebRTC.xcframework.zip
   echo -e "Upload from: " $RELEASE_FILE
 fi
