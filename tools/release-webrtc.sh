@@ -61,7 +61,7 @@ fi
 
 if [[ "$GITHUB_TOKEN" == "" ]]; then
       echo "Github token isn't set"
-      exit 1
+     exit 1
 fi
 
 python3 tools/build-webrtc.py --setup_depot_tools --$1 ~/srcjitsi
