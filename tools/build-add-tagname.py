@@ -38,7 +38,7 @@ def rmr(path):
         if e.errno != errno.ENOENT:
             raise
 
-# Update package.json "version" attribute with the tagname of the release
+# Update package.json "tagName" attribute with the tagname of the release
 
 def update_tag_name(tagName):
     # get package.json as JSON object
@@ -48,8 +48,8 @@ def update_tag_name(tagName):
 
     fIn.close()
 
-    # Set version, webrtc-builds\android, & webrtc-builds\ios json attributes to specified tagName
-    pkgJSON["version"] = tagName
+    # Set tagName, webrtc-builds\android, & webrtc-builds\ios json attributes to specified tagName
+    pkgJSON["tagName"] = tagName
 
     pkgJSON["webrtc-builds"]["android"] = ANDROID_LIBRARY_PATH + tagName + ANDROID_LIBRARY_NAME
     pkgJSON["webrtc-builds"]["ios"] = APPLE_LIBRARY_PATH + tagName + APPLE_LIBRARY_NAME

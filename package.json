@@ -1,6 +1,7 @@
 {
   "name": "react-native-webrtc",
-  "version": "release-999.0.3-rc.1",
+  "version": "111.0.2",
+  "tagName": "release-999.0.3-rc.1",
   "repoTag": "v111.0.2",
   "repository": {
     "type": "git",

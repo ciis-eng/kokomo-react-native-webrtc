@@ -15,11 +15,11 @@ if [[ "$CIRCLE_TAG" == "" ]]; then
       STANDALONE=true
 fi
 
-# Confirm that build-add-tagname.py was run; i.e. package.json "version" matches $CIRCLE_TAG
-TAG_NAME=$(jq -r '."version"' package.json)
+# Confirm that build-add-tagname.py was run; i.e. package.json "tagName" matches $CIRCLE_TAG
+TAG_NAME=$(jq -r '."tagName"' package.json)
 
 if [[ "$CIRCLE_TAG" != "$TAG_NAME" && "$STANDALONE" != true ]]; then
-      echo "Repo Tag ($CIRCLE_TAG) doesn't match package.json "version" ($TAG_NAME). Was build-add-tagname.py run?"
+      echo "Repo Tag ($CIRCLE_TAG) doesn't match package.json "tagName" ($TAG_NAME). Was build-add-tagname.py run?"
       exit 1
 fi
 
