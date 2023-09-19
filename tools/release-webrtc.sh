@@ -9,6 +9,14 @@ fi
 
 mkdir -p ~/srcjitsi
 
+# Confirm that build-add-tagname.py was run; i.e. package.json "version" matches $CIRCLE_TAG
+TAG_NAME=$(jq -r '."version"' package.json)
+
+if [[ "$CIRCLE_TAG" != "$TAG_NAME" ]]; then
+      echo "Repo Tag ($CIRCLE_TAG) doesn't match package.json "version" ($TAG_NAME). Was build-add-tagname.py run?"
+      exit 1
+fi
+
 # Setup tagName
 EXACT_MATCH_FOUND=false
 GIT_TAG_TO_USE=""
@@ -62,6 +70,8 @@ if [ $? -ne 0 ]; then
   echo "Error while trying to patch depot_tools"
   exit 1
 fi    
+
+exit 1
 
 # That's okay if this fails -- can decide later whether to copy generating Android
 # dependencies from "setup" to "sync", and skip this step
