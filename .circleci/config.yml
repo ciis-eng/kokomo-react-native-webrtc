@@ -23,7 +23,7 @@ jobs:
       - github-cli/setup
       - run:
           name: "Build Android version of WebRTC"
-          command: "./tools/build-jitsi-webrtc.sh android"
+          command: "./tools/release-webrtc.sh android"
   dis-ios-build:
     description: IOS build for DIS
     macos:
@@ -38,7 +38,7 @@ jobs:
       - github-cli/setup
       - run:
           name: "Build IOS version of WebRTC"
-          command: "./tools/build-jitsi-webrtc.sh ios"
+          command: "./tools/release-webrtc.sh ios"
 workflows:
   build-release:
     jobs:
