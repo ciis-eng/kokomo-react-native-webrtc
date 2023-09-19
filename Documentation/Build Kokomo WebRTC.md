@@ -5,19 +5,22 @@
 	- patches were created to build using the jitsi WebRTC repo instead
 - tools/patches contain git patches
 	- patches/src contains patches to webrtc src folder
+- package.json had 1 new attribute added, and 1 updated:
+	- repoTag - added to specify which tag to use for jitsi/webrtc repo
+	- version - now contains tag used for automated build
 - 2 new commands were added to build-webrtc.py
 	- setup_depot_tools: default depot_tools pulled from GoogleSource webRTC repo, changed to pull jitsi webRTC repo 
-	- setup_src: will use package.json "tagRepo" attribute to get jitsi git tag to checkout; will also apply patches/src patches
+	- setup_src: will use package.json "repoTag" attribute to get jitsi git tag to checkout; will also apply patches/src patches
 - For standalone build:
 	- for release-webrtc.sh, use "ios" or "android" params
 	- IOS needs to be built on Mac & Android needs to be built on Linux
 
 ## Steps for Automated Build
-1.	cd ~/kokomo-react-native-webrtc/tools/
-2.	python3 build-add-tagname.py *tagName*
+1.	cd ~/kokomo-react-native-webrtc
+2.	python3 tools/build-add-tagname.py *tagName*
 3.	git commit & push updated package.json 
 4.	git tag repo with "tagName" to start the CircleCI build
 
 ## Steps for Standalone Build
-1.	cd ~/kokomo-react-native-webrtc/tools/
-2.	./release-webrtc.sh ios | android
+1.	cd ~/kokomo-react-native-webrtc
+2.	./tools/release-webrtc.sh ios | android

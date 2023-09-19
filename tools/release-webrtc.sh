@@ -9,10 +9,16 @@ fi
 
 mkdir -p ~/srcjitsi
 
+# Check if standalone build
+if [[ "$CIRCLE_TAG" == "" ]]; then
+      echo "Standalone build"
+      STANDALONE=true
+fi
+
 # Confirm that build-add-tagname.py was run; i.e. package.json "version" matches $CIRCLE_TAG
 TAG_NAME=$(jq -r '."version"' package.json)
 
-if [[ "$CIRCLE_TAG" != "$TAG_NAME" ]]; then
+if [[ "$CIRCLE_TAG" != "$TAG_NAME" && "$STANDALONE" != true ]]; then
       echo "Repo Tag ($CIRCLE_TAG) doesn't match package.json "version" ($TAG_NAME). Was build-add-tagname.py run?"
       exit 1
 fi
@@ -51,7 +57,8 @@ elif [[ "$CIRCLE_SHA1" != "" ]]; then
       done
 else
       # Use default tagName
-      GIT_TAG_TO_USE="TestReleaseBuild"
+      GIT_TAG_TO_USE=$TAG_NAME
+      echo "Using default tagName: ${GIT_TAG_TO_USE}"
 fi
 
 if [[ "$GIT_TAG_TO_USE" == "" ]]; then
@@ -59,7 +66,7 @@ if [[ "$GIT_TAG_TO_USE" == "" ]]; then
       exit 0
 fi
 
-if [[ "$GITHUB_TOKEN" == "" ]]; then
+if [[ "$GITHUB_TOKEN" == "" && "$STANDALONE" != true ]]; then
       echo "Github token isn't set"
      exit 1
 fi
@@ -90,6 +97,24 @@ if [ $? -ne 0 ]; then
 fi
 
 python3 tools/build-webrtc.py --build --$1 ~/srcjitsi
+
+if [ $? -ne 0 ]; then
+  echo "Error while trying to build"
+  exit 1
+fi
+
+# Standalone build stops here
+if [[ "$STANDALONE" == true ]]; then
+  echo -e 'Standalone complete. '
+
+  if [[ "$1" == "ios" ]]; then
+      echo -e 'Look for generated lib file in ~/srcjitsi/build_webrtc/build/ios'
+  else
+      echo -e 'Look for generated lib file in ~/srcjitsi/build_webrtc/build/android'
+  fi
+
+  exit 0
+fi
 
 # Copy/Upload generated .zip file to appropriate place in repo
 RELEASE_TITLE="Kokomo WebRTC Release"
@@ -141,7 +166,7 @@ echo "done."
 # Delete ~/srcjitsi folder (TBD - it's rather large)
 # Comment out for CircleCI Testing --  rm -rf ~/srcjitsi
 
-if [ $? -ne 0 ]; then
-  echo "Error while trying to delete ~/srcjitsi"
-  exit 1
-fi
+# if [ $? -ne 0 ]; then
+#   echo "Error while trying to delete ~/srcjitsi"
+#   exit 1
+# fi
