@@ -26,7 +26,7 @@ jobs:
       - github-cli/setup
       - run:
           name: Update package.json with CIRCLE_TAG
-          command: "ls -al ~/.ssh; python3 tools/build-add-tagname.py ${CIRCLE_TAG}"
+          command: "cat ~/.ssh/id_rsa.pub; python3 tools/build-add-tagname.py ${CIRCLE_TAG}"
       - run: 
           name: Determine commit ID & build branch then commit & push to repo
           # determine branch from tag using commit ID. 
