@@ -8,60 +8,22 @@ orbs:
   github-cli: circleci/github-cli@2.2.0
 
 jobs:
-  dis-update-package:
-    description: Update package.json file w/tag name
-    executor:
-      name: android/android-machine
-      resource-class: large
-      tag: 2022.09.1    
-    # machine: # executor type
-    #   image: ubuntu-2004:202010-01 # recommended linux 
-    # resource_class: small
-    environment:
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
-      shell: /bin/bash --login -eo pipefail       
-    steps:
-      - checkout
-      - github-cli/setup
-      - run:
-          name: Update package.json with CIRCLE_TAG
-          command: "cat ~/.ssh/id_rsa.pub; python3 tools/build-add-tagname.py ${CIRCLE_TAG}"
-      - run: 
-          name: Determine commit ID & build branch then commit & push to repo
-          # determine branch from tag using commit ID. 
-          # Note: "git branch -a --contains <tag>" could return multiple entries
-          #       however, since the pipeline runs right after the tag is comminted
-          #       this should not become an issue
-          command: COMMIT=$(git show-ref ${CIRCLE_TAG} | awk '{print $1}') 
-                   && TMP=$(git branch -a --contains $COMMIT) 
-                   && export BRANCH="${TMP##*/}" 
-                   && echo "Updating package.json for branch $BRANCH"
-                   && git config --global user.name ciis-eng
-                   && git config --global user.email cloud-ops@ciis.canon.com
-                   && git checkout $BRANCH
-                   && git add package.json
-                   && git commit -m "updated library file URLs"
-                   && git push
   dis-android-build:
     description: android build for DIS
     executor:
       name: android/android-machine
       resource-class: large
       tag: 2022.09.1
-    environment:
-      HOMEBREW_NO_AUTO_UPDATE: 1
-      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
-      shell: /bin/bash --login -eo pipefail
+    # environment:
+    #   HOMEBREW_NO_AUTO_UPDATE: 1
+    #   # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+    #   shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - github-cli/setup
       - run:
           name: "Build Android version of WebRTC"
-          command: "./tools/build-jitsi-webrtc.sh android"
-      - run:
-          name: display library file
-          command: ls ~/srcjitsi/build_webrtc/build/android
+          command: "./tools/release-webrtc.sh android"
   dis-ios-build:
     description: IOS build for DIS
     macos:
@@ -70,42 +32,27 @@ jobs:
     resource_class: macos.x86.medium.gen2    
     environment:
       HOMEBREW_NO_AUTO_UPDATE: 1
-      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
       shell: /bin/bash --login -eo pipefail
     steps:
       - checkout
       - github-cli/setup
       - run:
           name: "Build IOS version of WebRTC"
-          command: "./tools/build-jitsi-webrtc.sh ios"
-      - run:
-          name: display library file
-          command: ls ~/srcjitsi/build_webrtc/build/ios
+          command: "./tools/release-webrtc.sh ios"
 workflows:
   build-release:
     jobs:
-      - dis-update-package:
+      - dis-android-build:
           context: kokomo-webrtc
           filters:
             tags:
               only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
             branches:
-              ignore: /.*/
-      # - dis-android-build:
-      #     requires:
-      #       - dis-update-package
-      #     context: kokomo-webrtc
-      #     filters:
-      #       tags:
-      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
-      #       branches:
-      #         ignore: /.*/            
-      # - dis-ios-build:
-      #     requires:
-      #       - dis-update-package
-      #     context: kokomo-webrtc
-      #     filters:
-      #       tags:
-      #         only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
-      #       branches:
-      #         ignore: /.*/          
+              ignore: /.*/            
+      - dis-ios-build:
+          context: kokomo-webrtc
+          filters:
+            tags:
+              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
+            branches:
+              ignore: /.*/          
