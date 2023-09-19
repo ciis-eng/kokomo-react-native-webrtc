@@ -63,6 +63,8 @@ if [ $? -ne 0 ]; then
   exit 1
 fi    
 
+exit 1
+
 # That's okay if this fails -- can decide later whether to copy generating Android
 # dependencies from "setup" to "sync", and skip this step
 python3 tools/build-webrtc.py --setup --$1 ~/srcjitsi
