@@ -1,0 +1,26 @@
+diff --git a/fetch_configs/webrtc.py b/fetch_configs/webrtc.py
+index c3727a5d..ce5a46db 100644
+--- a/fetch_configs/webrtc.py
++++ b/fetch_configs/webrtc.py
+@@ -13,7 +13,7 @@ class WebRTC(config_util.Config):
+     """Basic Config class for WebRTC."""
+     @staticmethod
+     def fetch_spec(props):
+-        url = 'https://webrtc.googlesource.com/src.git'
++        url = 'https://github.com/jitsi/webrtc.git'
+         spec = {
+             'solutions': [
+                 {
+diff --git a/recipes/recipe_modules/bot_update/examples/full.expected/tryjob_gerrit_webrtc.json b/recipes/recipe_modules/bot_update/examples/full.expected/tryjob_gerrit_webrtc.json
+index 61ad02b3..76e9eab1 100644
+--- a/recipes/recipe_modules/bot_update/examples/full.expected/tryjob_gerrit_webrtc.json
++++ b/recipes/recipe_modules/bot_update/examples/full.expected/tryjob_gerrit_webrtc.json
+@@ -6,7 +6,7 @@
+       "changes",
+       "--verbose",
+       "--host",
+-      "https://webrtc-review.googlesource.com",
++      "https://github.com/jitsi/webrtc.git",
+       "--json_file",
+       "/path/to/tmp/json",
+       "--limit",

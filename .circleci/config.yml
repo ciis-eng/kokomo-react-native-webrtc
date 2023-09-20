@@ -1,0 +1,57 @@
+# Use the latest 2.1 version of CircleCI pipeline process engine.
+# See: https://circleci.com/docs/configuration-reference
+version: 2.1
+
+orbs:
+  android: circleci/android@2.1.2
+  github-cli: circleci/github-cli@2.2.0
+
+jobs:
+  dis-android-build:
+    description: android build for DIS
+    executor:
+      name: android/android-machine
+      resource-class: large
+      tag: 2022.09.1
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      # PACKAGE_BUILD_KEYCHAIN: circle.keychain
+      shell: /bin/bash --login -eo pipefail
+    steps:
+      - checkout
+      - github-cli/setup
+      - run:
+          name: "Build Android version of WebRTC"
+          command: bash tools/release-webrtc.sh android
+  dis-ios-build:
+    description: IOS build for DIS
+    macos:
+      xcode: 14.2.0 # Specify the Xcode version to use
+    # resource_class: macos.m1.medium.gen1
+    resource_class: macos.x86.medium.gen2    
+    environment:
+      HOMEBREW_NO_AUTO_UPDATE: 1
+      shell: /bin/bash --login -eo pipefail
+    steps:
+      - checkout
+      - github-cli/setup
+      - run:
+          name: "Build IOS version of WebRTC"
+          command: bash tools/release-webrtc.sh ios
+workflows:
+  build-release:
+    jobs:
+      - dis-android-build:
+          context: kokomo-webrtc
+          filters:
+            tags:
+              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/
+            branches:
+              ignore: /.*/            
+      - dis-ios-build:
+          context: kokomo-webrtc
+          filters:
+            tags:
+              only: /release-[0-9]+.[0-9]+.[0-9]+.[0-9]+(-rc\.[0-9]+)?/ 
+            branches:
+              ignore: /.*/          
